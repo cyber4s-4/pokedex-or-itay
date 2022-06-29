@@ -43,14 +43,17 @@ export class Pokemon {
 export const getPokemonByName = async (pokemonName: string) => {
     const BASE_URL = "https://pokeapi.co/api/v2/pokemon/";
 
+    // ask from the api to give me a json object about my pokemon
     const response = await fetch(BASE_URL + pokemonName);
     const pokemonValues = await response.json();
 
+    // get the values from the body of the response.
     const weight = pokemonValues.weight;
     const height = pokemonValues.height;
     const name = pokemonValues.name;
     const id = pokemonValues.id;
 
+    // get the image
     const frontSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
 
     return new Pokemon(name, weight, height, frontSprite, id);

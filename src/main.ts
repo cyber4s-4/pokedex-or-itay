@@ -147,16 +147,13 @@ getPokemonByName("archeops").then((pokemonObject) =>
     console.log(pokemonObject)
 );
 
-function search(name: string) {
-    getPokemonByName(name).then((pokemon) =>
-        console.log(
-            new pokemonComponent(pokemon, document.createElement("div"))
-        )
-    );
-}
+//################################
 
-search("ditto");
+getPokemonByName("ditto")
+    .then((pokemon) => console.log("this is for Itay: ", pokemon))
+    .catch((err) => console.log("can not find pokemon"));
 
+//###############################
 /**
  * TODO:
  * 1. no need to load initial array.
