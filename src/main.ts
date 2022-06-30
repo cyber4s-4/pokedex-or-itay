@@ -136,10 +136,11 @@ export function loadArray(): Pokemon[] | [] {
     // If the local storag is empty its make general filter array.
     if (items === null || (items as string) === "[]") {
         console.log("l.s empty");
-        return GetInitialItemsArray();
+        return [];
+        // return GetInitialItemsArray();
     }
     // Return items as TS.
-    // console.log("l.s is here!");
+    console.log("l.s is here!");
     return JSON.parse(items);
 }
 
@@ -150,7 +151,8 @@ getPokemonByName("archeops").then((pokemonObject) =>
 //################################
 
 getPokemonByName("ditto")
-    .then((pokemon) => console.log("this is for Itay: ", pokemon))
+    .then((pokemon) => 
+   new pokemonComponent( pokemon,indexItemsContainer).render)
     .catch((err) => console.log("can not find pokemon"));
 
 //###############################
