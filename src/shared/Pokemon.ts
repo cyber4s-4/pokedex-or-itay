@@ -59,11 +59,28 @@ export const getPokemonByName = async (pokemonName: string) => {
     return new Pokemon(name, weight, height, frontSprite, id);
 };
 
-//##############################
-//Usage
-//##############################
+export const getAllPokemonTypes = async () => {
+    interface pokemonType {
+        name: string;
+        url: string;
+    }
+    const response = await (
+        await fetch("https://pokeapi.co/api/v2/type")
+    ).json();
 
-// async function someFunction() {
-//     const ditto = await getPokemonByName("ditto");
-//     console.log(ditto);
-// }
+    const types = response.results.map((type: pokemonType, i: number) => {
+        return {
+            name: type.name,
+            id: i + 1,
+        };
+    });
+    return types;
+};
+
+export const getPokemonsByType = async (typeId: string) => {
+    const response = await (
+        await fetch("https://pokeapi.co/api/v2/type/" + typeId)
+    ).json();
+
+    return response.pokemon;
+};

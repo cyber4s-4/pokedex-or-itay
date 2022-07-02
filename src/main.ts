@@ -1,6 +1,11 @@
 //No-Constant global variables.
 
-import { getPokemonByName, Pokemon } from "./shared/Pokemon";
+import {
+    getAllPokemonTypes,
+    getPokemonByName,
+    getPokemonsByType,
+    Pokemon,
+} from "./shared/Pokemon";
 
 export let indexMain = document.createElement("div");
 export let indexItemsContainer = document.createElement("div");
@@ -48,13 +53,47 @@ export function setMainDiv(div: HTMLElement, container: HTMLElement) {
 export function creatFilterBar() {
     let filterDiv = document.createElement("div");
     let general = document.createElement("button");
+    let typesSelect = document.createElement("select");
 
     filterDiv.classList.add("filter-bar-container");
     filterDiv.innerText = "מיין לפי";
     general.innerText = "כללי";
+    const defaultSelect = document.createElement("option");
+    defaultSelect.disabled = true;
+    defaultSelect.hidden = true;
+    defaultSelect.selected = true;
+    defaultSelect.innerText = "לפי סוג";
 
+    interface pokemonType {
+        name: string;
+        id: number;
+    }
+
+    getAllPokemonTypes().then((types) => {
+        types.forEach((type: pokemonType) => {
+            const typeOption = document.createElement("option");
+            typeOption.innerText = type.name;
+            typeOption.value = type.id.toString();
+
+            typesSelect.append(typeOption);
+        });
+    });
+
+    typesSelect.append(defaultSelect);
+
+    typesSelect.addEventListener("change", async (e) => {
+        const currValue = typesSelect.value;
+        const allPokemons = await getPokemonsByType(currValue);
+        /**
+         * Finished loading all types and putting them in a select.
+         * Finished loading all pokemons from the same type.
+         * TODO: Display top 10 pokemons to the screen.
+         */
+        console.log(allPokemons.splice(Math.random() * 10, 10));
+    });
     document.body.appendChild(indexMain);
     filterDiv.append(general);
+    filterDiv.append(typesSelect);
     indexItemsContainer.appendChild(filterDiv);
 
     // Filter button for general.
@@ -69,6 +108,7 @@ export function creatFilterBar() {
         });
     });
 }
+
 // Create side bar.
 export function creatSideBar() {
     const continer = document.createElement("div");
@@ -140,7 +180,6 @@ export function loadArray(): Pokemon[] | [] {
         // return GetInitialItemsArray();
     }
     // Return items as TS.
-    console.log("l.s is here!");
     return JSON.parse(items);
 }
 
@@ -148,19 +187,4 @@ getPokemonByName("archeops").then((pokemonObject) =>
     console.log(pokemonObject)
 );
 
-//################################
-
-getPokemonByName("ditto")
-    .then((pokemon) => 
-   new pokemonComponent( pokemon,indexItemsContainer).render)
-    .catch((err) => console.log("can not find pokemon"));
-
-//###############################
-/**
- * TODO:
- * 1. no need to load initial array.
- * 2. when user click 'search' take the input and
- *    search with 'getPokemonByName' function.
- * 3. display using return value from 'getPokemonByName'
- *    with 'PokemonComponent'
- */
+getAllPokemonTypes().then((types) => console.log(types));
