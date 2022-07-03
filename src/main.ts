@@ -10,7 +10,11 @@ import {
 export let indexMain = document.createElement("div");
 export let indexItemsContainer = document.createElement("div");
 export let itemsArray: Pokemon[] = loadArray();
-
+const pokeListContainer = document.createElement("div");
+function reset() {
+    itemsArray = [];
+    pokeListContainer.innerHTML = "";
+}
 export class pokemonComponent {
     data: Pokemon;
     parent: HTMLElement;
@@ -81,21 +85,41 @@ export function creatFilterBar() {
 
     typesSelect.append(defaultSelect);
 
-    typesSelect.addEventListener("change", async (e) => {
+    typesSelect.addEventListener("change", async () => {
+        reset();
         const currValue = typesSelect.value;
         const allPokemons = await getPokemonsByType(currValue);
+
         /**
          * Finished loading all types and putting them in a select.
          * Finished loading all pokemons from the same type.
          * TODO: Display top 10 pokemons to the screen.
          */
-        console.log(allPokemons.splice(Math.random() * 10, 10));
+        interface reqPokemon {
+            pokemon: {
+                name: string;
+                url: string;
+            };
+            slot: number;
+        }
+        const pokemonsToRender: reqPokemon[] = allPokemons.splice(
+            Math.random() * 12,
+            10
+        );
+
+        pokemonsToRender.map((p) => {
+            getPokemonByName(p.pokemon.name).then((pokemon) => {
+                const pc = new pokemonComponent(pokemon, pokeListContainer);
+                pc.render();
+            });
+        });
     });
+
     document.body.appendChild(indexMain);
     filterDiv.append(general);
     filterDiv.append(typesSelect);
     indexItemsContainer.appendChild(filterDiv);
-
+    indexItemsContainer.append(pokeListContainer);
     // Filter button for general.
     general.addEventListener("click", () => {
         removeHTMLItems();
@@ -141,31 +165,7 @@ function removeHTMLItems() {
         items[0].remove();
     }
 }
-// Create the initial items list to itemsGenralArray.
-function GetInitialItemsArray() {
-    let arr: Pokemon[] | null = [];
-    let newItem = new Pokemon(
-        "blubasaur",
-        0.7,
-        6.9,
-        "https://img.pokemondb.net/artwork/bulbasaur.jpg",
-        1
-    );
-
-    arr.push(newItem);
-
-    let nnewItem = new Pokemon(
-        "archeops",
-        1.4,
-        32,
-        "https://img.pokemondb.net/artwork/large/archeops.jpg",
-        567
-    );
-
-    arr.push(nnewItem);
-
-    return arr;
-}
+//
 // Serialization - exchange data to string.
 export function updateLocalstorage() {
     localStorage.setItem("ITEMS", JSON.stringify(itemsArray));
@@ -183,8 +183,32 @@ export function loadArray(): Pokemon[] | [] {
     return JSON.parse(items);
 }
 
-getPokemonByName("archeops").then((pokemonObject) =>
-    console.log(pokemonObject)
-);
+//#####################
+// DEPRECATED:
+//#####################
 
-getAllPokemonTypes().then((types) => console.log(types));
+// Create the initial items list to itemsGenralArray.
+// function GetInitialItemsArray() {
+//     let arr: Pokemon[] | null = [];
+//     let newItem = new Pokemon(
+//         "blubasaur",
+//         0.7,
+//         6.9,
+//         "https://img.pokemondb.net/artwork/bulbasaur.jpg",
+//         1
+//     );
+
+//     arr.push(newItem);
+
+//     let nnewItem = new Pokemon(
+//         "archeops",
+//         1.4,
+//         32,
+//         "https://img.pokemondb.net/artwork/large/archeops.jpg",
+//         567
+//     );
+
+//     arr.push(nnewItem);
+
+//     return arr;
+// }
