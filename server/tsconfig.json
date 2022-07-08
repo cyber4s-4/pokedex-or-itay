@@ -12,5 +12,6 @@
         "forceConsistentCasingInFileNames": true,
         "incremental": true,
         "strict": true
-    }
+    },
+    "exclude": []
 }
