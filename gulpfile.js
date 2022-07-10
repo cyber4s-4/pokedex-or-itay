@@ -24,20 +24,20 @@ gulp.task("scss", () => {
 });
 
 // Transfers index
-gulp.task("index", () => {
-    return gulp
-        .src(["./src/*.html", "./src/favicon.ico"])
-        .pipe(gulp.dest("./dist"));
-});
+// gulp.task("index", () => {
+//     return gulp
+//         .src(["./src/*.html", "./src/favicon.ico"])
+//         .pipe(gulp.dest("./dist"));
+// });
 
-// Browser Sync
-gulp.task("browser-sync", () => {
-    browserSync.init({
-        browser: "default",
-        port: 4000,
-        server: { baseDir: "./dist" },
-    });
-});
+// // Browser Sync
+// gulp.task("browser-sync", () => {
+//     browserSync.init({
+//         browser: "default",
+//         port: 4000,
+//         server: { baseDir: "./dist" },
+//     });
+// });
 
 // Browser Sync live reload
 gulp.task("browser-sync-watch", () => {
@@ -82,14 +82,7 @@ gulp.task(
         "index",
         "tsc",
         "build",
-        "browser-sync",
 
-        gulp.parallel(
-            "watch-scss",
-            "watch-html",
-            "watch-tsc",
-            "tsc-w",
-            "browser-sync-watch"
-        )
+        gulp.parallel("watch-scss", "watch-html", "watch-tsc", "tsc-w")
     )
 );

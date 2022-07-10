@@ -44,7 +44,7 @@ export class Pokemon {
  *
  */
 export const getPokemonByName = async (pokemonName: string) => {
-    const BASE_URL = "http://localhost:3000/pokemon/";
+    const BASE_URL = "/pokemon/";
 
     // ask from the api to give me a json object about my pokemon
     const response = await fetch(BASE_URL + pokemonName);
@@ -59,21 +59,19 @@ export const getPokemonByName = async (pokemonName: string) => {
     const types = pokemonValues.types;
     const img = pokemonValues.img;
 
-    // get the image
+    console.log(img);
 
     return new Pokemon(name, weight, height, img, id, types);
 };
 
 export const getAllPokemonTypes = async () => {
-    const response = await (await fetch("http://localhost:3000/types")).json();
+    const response = await (await fetch("/types")).json();
     console.log(response);
     return response;
 };
 
 export const getPokemonsByType = async (typeName: string) => {
-    const response = await (
-        await fetch("http://localhost:3000/pokemons/" + typeName)
-    ).json();
+    const response = await (await fetch("/pokemons/" + typeName)).json();
 
     return response;
 };

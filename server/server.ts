@@ -2,7 +2,8 @@ import express, { Request, Response } from "express";
 import path from "path";
 import fs from "fs";
 import cors from "cors";
-const PORT = 3000;
+import process from "process";
+const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
 interface Pokemon {
