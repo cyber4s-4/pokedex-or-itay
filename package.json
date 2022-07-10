@@ -1,12 +1,12 @@
 {
     "name": "gulp_typescript",
     "scripts": {
-        "start": "gulp",
+        "start": "node ./server/server.js",
         "lint": "eslint ./src --ext .ts",
         "jest": "jest",
         "lint-fix": "eslint ./src --ext .ts --fix",
         "get-data": "node ./server/script",
-        "server": "node ./server/server.js"
+        "client": "gulp"
     },
     "dependencies": {
         "@types/express": "^4.17.13",

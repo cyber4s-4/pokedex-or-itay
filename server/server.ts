@@ -15,7 +15,7 @@ interface Pokemon {
 }
 
 const pokemons: Pokemon[] = JSON.parse(
-    fs.readFileSync("./data.json", { encoding: "utf-8" })
+    fs.readFileSync(path.join(__dirname, "data.json"), { encoding: "utf-8" })
 );
 
 app.use("/", express.static(path.join(__dirname, "../dist")));
