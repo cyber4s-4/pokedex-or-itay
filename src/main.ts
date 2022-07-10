@@ -68,16 +68,11 @@ export function creatFilterBar() {
     defaultSelect.selected = true;
     defaultSelect.innerText = "לפי סוג";
 
-    interface pokemonType {
-        name: string;
-        id: number;
-    }
-
     getAllPokemonTypes().then((types) => {
-        types.forEach((type: pokemonType) => {
+        types.forEach((type: string) => {
             const typeOption = document.createElement("option");
-            typeOption.innerText = type.name;
-            typeOption.value = type.id.toString();
+            typeOption.innerText = type;
+            typeOption.value = type;
 
             typesSelect.append(typeOption);
         });
@@ -95,23 +90,11 @@ export function creatFilterBar() {
          * Finished loading all pokemons from the same type.
          * TODO: Display top 10 pokemons to the screen.
          */
-        interface reqPokemon {
-            pokemon: {
-                name: string;
-                url: string;
-            };
-            slot: number;
-        }
-        const pokemonsToRender: reqPokemon[] = allPokemons.splice(
-            Math.random() * 12,
-            10
-        );
+        const pokemonsToRender: Pokemon[] = allPokemons;
 
         pokemonsToRender.map((p) => {
-            getPokemonByName(p.pokemon.name).then((pokemon) => {
-                const pc = new pokemonComponent(pokemon, pokeListContainer);
-                pc.render();
-            });
+            const pc = new pokemonComponent(p, pokeListContainer);
+            pc.render();
         });
     });
 

@@ -4,13 +4,15 @@ export class Pokemon {
     height: number;
     img: string;
     id: number;
+    types: string[];
 
     constructor(
         name: string,
         weight: number,
         height: number,
         img: string,
-        id: number
+        id: number,
+        types: string[]
     ) {
         if (weight < 0 || height < 0) {
             throw new TypeError("weight & height must be bigger then 0");
@@ -29,6 +31,7 @@ export class Pokemon {
         this.height = height;
         this.img = img;
         this.id = id;
+        this.types = types;
     }
 }
 /**
@@ -41,10 +44,11 @@ export class Pokemon {
  *
  */
 export const getPokemonByName = async (pokemonName: string) => {
-    const BASE_URL = "https://pokeapi.co/api/v2/pokemon/";
+    const BASE_URL = "http://localhost:3000/pokemon/";
 
     // ask from the api to give me a json object about my pokemon
     const response = await fetch(BASE_URL + pokemonName);
+    console.log(response);
     const pokemonValues = await response.json();
 
     // get the values from the body of the response.
@@ -52,35 +56,24 @@ export const getPokemonByName = async (pokemonName: string) => {
     const height = pokemonValues.height;
     const name = pokemonValues.name;
     const id = pokemonValues.id;
+    const types = pokemonValues.types;
+    const img = pokemonValues.img;
 
     // get the image
-    const frontSprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
 
-    return new Pokemon(name, weight, height, frontSprite, id);
+    return new Pokemon(name, weight, height, img, id, types);
 };
 
 export const getAllPokemonTypes = async () => {
-    interface pokemonType {
-        name: string;
-        url: string;
-    }
-    const response = await (
-        await fetch("https://pokeapi.co/api/v2/type")
-    ).json();
-
-    const types = response.results.map((type: pokemonType, i: number) => {
-        return {
-            name: type.name,
-            id: i + 1,
-        };
-    });
-    return types;
+    const response = await (await fetch("http://localhost:3000/types")).json();
+    console.log(response);
+    return response;
 };
 
-export const getPokemonsByType = async (typeId: string) => {
+export const getPokemonsByType = async (typeName: string) => {
     const response = await (
-        await fetch("https://pokeapi.co/api/v2/type/" + typeId)
+        await fetch("http://localhost:3000/pokemons/" + typeName)
     ).json();
 
-    return response.pokemon;
+    return response;
 };

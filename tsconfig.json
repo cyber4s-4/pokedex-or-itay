@@ -14,5 +14,6 @@
         "incremental": true,
         "tsBuildInfoFile": "./dist/cache/tsc.json",
         "strict": true
-    }
+    },
+    "exclude": ["server"]
 }

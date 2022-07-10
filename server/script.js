@@ -1,5 +1,6 @@
 const axios = require("axios").default;
 const fs = require("fs");
+const { type } = require("os");
 const path = require("path");
 const process = require("process");
 console.log(path.join(__dirname, "data.json"));
@@ -12,13 +13,14 @@ const fetchTopPokemons = async (n, start = 1) => {
         axios
             .get(url)
             .then((res) => {
-                const { name, id, height, weight } = res.data;
+                const { name, id, height, weight, types } = res.data;
                 const pokemon = {
                     name,
                     id,
                     height,
                     weight,
                     img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+                    types: types.map((typeSlot) => typeSlot.type.name),
                 };
                 console.log(
                     `####       loaded pokemon ${name} id:${id} from: ${url}    ####`
@@ -41,8 +43,11 @@ if (operation === "display") {
     };
 
     const allIDs = getAllIds();
-    console.log(allIDs.reduce((prev, curr) => (prev >= curr ? prev : curr), 1));
-    console.log(allIDs.length);
+    console.log(
+        "max : ",
+        allIDs.reduce((prev, curr) => (prev >= curr ? prev : curr), 1)
+    );
+    console.log("amount: ", allIDs.length);
 }
 
 if (operation === "fetch") {
