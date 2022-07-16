@@ -1,6 +1,5 @@
 const axios = require("axios").default;
 const fs = require("fs");
-const { type } = require("os");
 const path = require("path");
 const process = require("process");
 console.log(path.join(__dirname, "data.json"));
@@ -47,10 +46,11 @@ const mix = () => {
         fs.readFileSync(dataPath, { encoding: "utf-8" })
     );
     const pokefusion = [];
-    const maxId = pokemons.length + 1;
+    let maxId = pokemons.length + 1;
     for (let i = 0; i < pokemons.length; i++) {
         const firstPokemon = pokemons[i];
         for (let j = i + 1; j < pokemons.length; j++) {
+            maxId++;
             const secondPokemon = pokemons[j];
             const newName =
                 firstPokemon.name.substr(
@@ -61,21 +61,20 @@ const mix = () => {
                     parseInt(secondPokemon.name.length / 2),
                     secondPokemon.name.length - 1
                 );
-            pokefusion.push({
+            const newPokemon = {
                 id: maxId,
                 name: newName,
                 weight: firstPokemon.weight,
                 height: secondPokemon.height,
                 img: firstPokemon.img,
-                types: [],
-            });
+                types: [...firstPokemon.types, ...secondPokemon.types],
+            };
+            pokefusion.push(newPokemon);
         }
     }
-    fs.writeFileSync(
-        "./data.json",
-        JSON.stringify([...pokemons, ...pokefusion])
-    );
+    fs.writeFileSync(dataPath, JSON.stringify([...pokemons, ...pokefusion]));
 };
+
 if (operation === "display") {
     const getAllIds = () => {
         const pokemons = JSON.parse(
