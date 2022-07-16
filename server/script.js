@@ -6,7 +6,6 @@ console.log(path.join(__dirname, "data.json"));
 const dataPath = path.join(__dirname, "./data.json");
 const throat = require("throat");
 const { MongoClient } = require("mongodb");
-const { PollingWatchKind } = require("typescript");
 const [operation, amount, start] = process.argv.slice(2);
 const connectionString =
     "mongodb+srv://or:or123@cluster0.khg90.mongodb.net/?retryWrites=true&w=majority";
@@ -93,6 +92,23 @@ const mix = () => {
     });
 };
 
+const loadTypes = async () => {
+    const pokemons = JSON.parse(
+        fs.readFileSync(dataPath, { encoding: "utf-8" })
+    );
+
+    const types = [...new Set(pokemons.map((pokemon) => pokemon.types).flat())];
+    const client = new MongoClient(connectionString);
+    await client.connect();
+    const typesCollection = client.db("pokemons-db").collection("poke-types");
+    await typesCollection.insertMany(
+        types.map((type) => {
+            return { type };
+        })
+    );
+    client.close();
+};
+
 if (operation === "display") {
     const getAllIds = () => {
         const pokemons = JSON.parse(
@@ -120,3 +136,5 @@ if (operation === "fetch") {
 if (operation === "mix") {
     mix();
 }
+
+loadTypes();

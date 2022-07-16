@@ -55,7 +55,7 @@ export const getPokemonByName = async (pokemonName: string) => {
     const weight = pokemonValues.weight;
     const height = pokemonValues.height;
     const name = pokemonValues.name;
-    const id = pokemonValues.id;
+    const id = pokemonValues.index;
     const types = pokemonValues.types;
     const img = pokemonValues.img;
 
@@ -67,7 +67,7 @@ export const getPokemonByName = async (pokemonName: string) => {
 export const getAllPokemonTypes = async () => {
     const response = await (await fetch("/types")).json();
     console.log(response);
-    return response;
+    return response.map((type: any) => type.type);
 };
 
 export const getPokemonsByType = async (typeName: string) => {
