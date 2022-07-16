@@ -1,7 +1,7 @@
 {
     "name": "gulp_typescript",
     "scripts": {
-        "start": "node ./server/server.js",
+        "start": "gulp & node ./server/server.js",
         "lint": "eslint ./src --ext .ts",
         "jest": "jest",
         "lint-fix": "eslint ./src --ext .ts --fix",

@@ -4,7 +4,7 @@ import { Pokemon } from "models/pokemon";
 const connectionString =
     "mongodb+srv://or:or123@cluster0.khg90.mongodb.net/?retryWrites=true&w=majority";
 let client: MongoClient;
-let pokeCollection: Collection;
+let pokeCollection: Collection<Pokemon>;
 export const connect = async () => {
     client = new MongoClient(connectionString);
     try {

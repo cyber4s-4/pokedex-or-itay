@@ -81,8 +81,8 @@ gulp.task(
         "scss",
         "index",
         "tsc",
-        "build",
+        "build"
 
-        gulp.parallel("watch-scss", "watch-html", "watch-tsc", "tsc-w")
+        //gulp.parallel("watch-scss", "watch-html", "watch-tsc", "tsc-w")
     )
 );
