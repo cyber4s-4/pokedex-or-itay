@@ -5,7 +5,18 @@ const process = require("process");
 console.log(path.join(__dirname, "data.json"));
 const dataPath = path.join(__dirname, "./data.json");
 const throat = require("throat");
+const { MongoClient } = require("mongodb");
+const { PollingWatchKind } = require("typescript");
 const [operation, amount, start] = process.argv.slice(2);
+const connectionString =
+    "mongodb+srv://or:or123@cluster0.khg90.mongodb.net/?retryWrites=true&w=majority";
+
+// const client = new MongoClient(connectionString);
+
+// client.connect(async () => {
+//     const pokeDB = client.db("pokemons-db");
+//     const pokeCollection = pokeDB.collection("pokemons");
+// });
 
 const fetchTopPokemons = async (n, start = 1) => {
     const allPokemons = [];
@@ -26,7 +37,7 @@ const fetchPokemon = (url, allPokemons) => {
             const { name, id, height, weight, types } = res.data;
             const pokemon = {
                 name,
-                id,
+                index: id,
                 height,
                 weight,
                 img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
@@ -45,6 +56,8 @@ const mix = () => {
     const pokemons = JSON.parse(
         fs.readFileSync(dataPath, { encoding: "utf-8" })
     );
+    const client = new MongoClient(connectionString);
+
     const pokefusion = [];
     let maxId = pokemons.length + 1;
     for (let i = 0; i < pokemons.length; i++) {
@@ -62,7 +75,7 @@ const mix = () => {
                     secondPokemon.name.length - 1
                 );
             const newPokemon = {
-                id: maxId,
+                index: maxId,
                 name: newName,
                 weight: firstPokemon.weight,
                 height: secondPokemon.height,
@@ -72,7 +85,12 @@ const mix = () => {
             pokefusion.push(newPokemon);
         }
     }
-    fs.writeFileSync(dataPath, JSON.stringify([...pokemons, ...pokefusion]));
+    client.connect(async () => {
+        const pokeDB = client.db("pokemons-db");
+        const pokeCollection = pokeDB.collection("pokemons");
+        await pokeCollection.insertMany([...pokemons, ...pokefusion]);
+        client.close();
+    });
 };
 
 if (operation === "display") {

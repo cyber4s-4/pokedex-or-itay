@@ -23,12 +23,12 @@ gulp.task("scss", () => {
     return gulp.src("./src/**/*.scss").pipe(sass()).pipe(gulp.dest("./dist"));
 });
 
-// Transfers index
-// gulp.task("index", () => {
-//     return gulp
-//         .src(["./src/*.html", "./src/favicon.ico"])
-//         .pipe(gulp.dest("./dist"));
-// });
+//Transfers index
+gulp.task("index", () => {
+    return gulp
+        .src(["./src/*.html", "./src/favicon.ico"])
+        .pipe(gulp.dest("./dist"));
+});
 
 // // Browser Sync
 // gulp.task("browser-sync", () => {

@@ -11,7 +11,7 @@ interface Pokemon {
     weight: number;
     height: number;
     img: string;
-    id: number;
+    index: number;
     types: string[];
 }
 
