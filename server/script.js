@@ -10,18 +10,19 @@ const [operation, amount, start] = process.argv.slice(2);
 const connectionString =
     "mongodb+srv://or:or123@cluster0.khg90.mongodb.net/?retryWrites=true&w=majority";
 
-// const client = new MongoClient(connectionString);
-
-// client.connect(async () => {
-//     const pokeDB = client.db("pokemons-db");
-//     const pokeCollection = pokeDB.collection("pokemons");
-// });
+const generateID = (id) => {
+    if (id > 905) {
+        const newId = id - 904;
+        return 10000 + newId;
+    }
+    return id;
+};
 
 const fetchTopPokemons = async (n, start = 1) => {
     const allPokemons = [];
     const urls = [];
     for (let i = start; i <= n + start; i++) {
-        urls.push(`https://pokeapi.co/api/v2/pokemon/${i}`);
+        urls.push(`https://pokeapi.co/api/v2/pokemon/${generateID(i)}`);
     }
     const data = Promise.all(
         urls.map(throat(10, (url) => fetchPokemon(url, allPokemons)))
