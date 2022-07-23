@@ -1,0 +1,132 @@
+* {
+  direction: rtl;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background: #080808;
+  font-family: Helvetica, sans-serif;
+  color: white;
+  position: sticky;
+  top: 0;
+}
+
+.main {
+  display: flex;
+  flex-direction: row-reverse;
+  background: #1c1b1b;
+  font-family: Helvetica, sans-serif;
+  color: white;
+  justify-content: flex-end;
+}
+.main .all-items-container {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  min-width: 200px;
+}
+
+.fotter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 10px;
+  background: #080808;
+  font-family: Helvetica, sans-serif;
+  color: white;
+  position: sticky;
+  bottom: 0;
+}
+
+.side-bar-container {
+  display: flex;
+  flex-direction: column;
+  flex: 25%;
+  max-width: 150px;
+  min-width: 50px;
+  padding: 25px;
+  background: #0f0f0f;
+  text-align: center;
+  line-height: 25px;
+}
+
+.filter-bar-container {
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.item-div {
+  display: flex;
+  flex-direction: row;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  line-height: 15px;
+  font-size: 12px;
+  background-color: rgb(131, 131, 131);
+}
+.item-div h2 {
+  line-height: 25px;
+}
+@media only screen and (max-width: 900px) {
+  .item-div {
+    flex-direction: column;
+  }
+}
+
+.itemImage {
+  flex: 20%;
+  padding: 10px;
+  height: 100px;
+  width: 200px;
+  margin: auto;
+}
+@media only screen and (max-width: 500px) {
+  .itemImage {
+    width: 150px;
+  }
+}
+
+.itemText {
+  flex: 60%;
+  padding: 10px;
+  font-size: small;
+}
+
+.logoAndPrice {
+  display: flex;
+  flex-direction: column;
+  flex: 20%;
+  padding: 10px;
+  margin: auto;
+  background-color: #ffffff;
+  font-size: large;
+  text-align: center;
+  color: #81ac53;
+  height: 100px;
+  width: 200px;
+}
+@media only screen and (max-width: 500px) {
+  .logoAndPrice {
+    width: 150px;
+  }
+}
+
+.barContiner {
+  display: flex;
+  flex-direction: row;
+  background-color: #1c1b1b;
+}
+
+.barLink {
+  padding: 14px 20px;
+}
+
+/* Change color on hover */
+.barLink:hover {
+  background-color: #ddd;
+  color: rgb(119, 41, 41);
+}
