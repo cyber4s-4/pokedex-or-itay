@@ -141,6 +141,7 @@ function creatFilterBar() {
     defaultSelect.selected = true;
     defaultSelect.innerText = "לפי סוג";
     (0, Pokemon_1.getAllPokemonTypes)().then((types) => {
+        console.log(types);
         types.forEach((type) => {
             const typeOption = document.createElement("option");
             typeOption.innerText = type;
@@ -314,8 +315,7 @@ const getPokemonByName = async (pokemonName) => {
 exports.getPokemonByName = getPokemonByName;
 const getAllPokemonTypes = async () => {
     const response = await (await fetch("/types")).json();
-    console.log(response);
-    return response.map((type) => type.type);
+    return response;
 };
 exports.getAllPokemonTypes = getAllPokemonTypes;
 const getPokemonsByType = async (typeName) => {

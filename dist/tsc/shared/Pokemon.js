@@ -49,8 +49,7 @@ const getPokemonByName = async (pokemonName) => {
 exports.getPokemonByName = getPokemonByName;
 const getAllPokemonTypes = async () => {
     const response = await (await fetch("/types")).json();
-    console.log(response);
-    return response.map((type) => type.type);
+    return response;
 };
 exports.getAllPokemonTypes = getAllPokemonTypes;
 const getPokemonsByType = async (typeName) => {

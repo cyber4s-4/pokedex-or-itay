@@ -57,6 +57,7 @@ function creatFilterBar() {
     defaultSelect.selected = true;
     defaultSelect.innerText = "לפי סוג";
     (0, Pokemon_1.getAllPokemonTypes)().then((types) => {
+        console.log(types);
         types.forEach((type) => {
             const typeOption = document.createElement("option");
             typeOption.innerText = type;
