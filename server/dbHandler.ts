@@ -1,40 +1,49 @@
-import { MongoClient, Db, Collection } from "mongodb";
+import postgres from "pg";
+import dotenv from "dotenv";
+import process from "process";
 import { Pokemon } from "models/pokemon";
+dotenv.config();
 
-const connectionString =
-    "mongodb+srv://or:or123@cluster0.khg90.mongodb.net/?retryWrites=true&w=majority";
-let client: MongoClient;
-let pokeCollection: Collection;
+let client: postgres.Client;
 export const connect = async () => {
-    client = new MongoClient(connectionString);
     try {
+        console.log("connecting");
+        client = new postgres.Client({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false },
+        });
         await client.connect();
-        pokeCollection = client.db("pokemons-db").collection("pokemons");
-        console.log("connected !");
     } catch (e) {
-        throw "couldnt connect";
+        console.log("couldnt connect: ", e);
     }
 };
 
 export const getAllPokemons = async () => {
-    const cursor = pokeCollection.find();
-    const pokemons = await cursor.toArray();
-    return pokemons;
+    const data = await client.query<Pokemon>("SELECT * FROM pokemons;");
+    return data.rows;
 };
 
 export const getPokemonsByType = async (type: string) => {
-    const cursor = pokeCollection.find({ types: type });
-    const pokemons = await cursor.toArray();
-    return pokemons;
+    const data = await client.query<Pokemon>(
+        `SELECT * FROM pokemons WHERE '${type}'=ANY(types);`
+    );
+    return data.rows;
 };
 
-export const getPokemonByName = async (name: string) =>
-    await pokeCollection.findOne({ name: name });
+export const getPokemonByName = async (name: string) => {
+    const data = await client.query<Pokemon>(
+        `SELECT * FROM pokemons WHERE name='${name}'`
+    );
+    return data.rows[0];
+};
 
 export const getTypes = async () => {
-    const pokeTypesCollection = client
-        .db("pokemons-db")
-        .collection("poke-types");
-    const typesCursor = pokeTypesCollection.find();
-    return await typesCursor.toArray();
+    const data = await client.query<Pokemon>(
+        `SELECT DISTINCT types FROM pokemons;`
+    );
+    const puffedTypes = data.rows.map((emptyPokemon) => emptyPokemon.types);
+
+    const allTypes = [...new Set(puffedTypes.flat())];
+
+    return allTypes;
 };

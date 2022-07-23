@@ -5,14 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
-const fs_1 = __importDefault(require("fs"));
 const cors_1 = __importDefault(require("cors"));
 const process_1 = __importDefault(require("process"));
+// import { Pokemon } from "models/pokemon";
 const dbHandler_1 = require("./dbHandler");
 const PORT = process_1.default.env.PORT || 3000;
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
-const pokemons = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "data.json"), { encoding: "utf-8" }));
+app.use(express_1.default.json());
 app.use("/", express_1.default.static(path_1.default.join(__dirname, "../dist")));
 app.get("/pokemon/:name", async (req, res) => {
     const name = req.params.name;

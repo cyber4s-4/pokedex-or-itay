@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 import cors from "cors";
 import process from "process";
-import { Pokemon } from "models/pokemon";
+// import { Pokemon } from "models/pokemon";
 import {
     connect,
     getAllPokemons,
@@ -14,10 +14,7 @@ import {
 const PORT = process.env.PORT || 3000;
 const app = express();
 app.use(cors());
-
-const pokemons: Pokemon[] = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "data.json"), { encoding: "utf-8" })
-);
+app.use(express.json());
 
 app.use("/", express.static(path.join(__dirname, "../dist")));
 

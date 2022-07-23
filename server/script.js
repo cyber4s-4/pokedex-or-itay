@@ -5,10 +5,14 @@ const process = require("process");
 console.log(path.join(__dirname, "data.json"));
 const dataPath = path.join(__dirname, "./data.json");
 const throat = require("throat");
-const { MongoClient } = require("mongodb");
 const [operation, amount, start] = process.argv.slice(2);
 const connectionString =
-    "mongodb+srv://or:or123@cluster0.khg90.mongodb.net/?retryWrites=true&w=majority";
+    "postgres://ykbwshvxovughu:c2e24154034296fba61f0e43d47f3096f2ad3fda336b54fe9240e022a6426f18@ec2-54-208-104-27.compute-1.amazonaws.com:5432/d14vjkjb53tnve";
+const postgres = require("pg");
+const client = new postgres.Client({
+    connectionString,
+    ssl: { rejectUnauthorized: false },
+});
 
 const generateID = (id) => {
     if (id > 905) {
@@ -56,7 +60,6 @@ const mix = () => {
     const pokemons = JSON.parse(
         fs.readFileSync(dataPath, { encoding: "utf-8" })
     );
-    const client = new MongoClient(connectionString);
 
     const pokefusion = [];
     let maxId = pokemons.length + 1;
@@ -85,29 +88,29 @@ const mix = () => {
             pokefusion.push(newPokemon);
         }
     }
-    client.connect(async () => {
-        const pokeDB = client.db("pokemons-db");
-        const pokeCollection = pokeDB.collection("pokemons");
-        await pokeCollection.insertMany([...pokemons, ...pokefusion]);
-        client.close();
-    });
+    fs.writeFileSync(dataPath, JSON.stringify([...pokemons, ...pokefusion]));
 };
 
-const loadTypes = async () => {
+const insertToDb = async () => {
+    await client.connect();
     const pokemons = JSON.parse(
         fs.readFileSync(dataPath, { encoding: "utf-8" })
     );
 
-    const types = [...new Set(pokemons.map((pokemon) => pokemon.types).flat())];
-    const client = new MongoClient(connectionString);
-    await client.connect();
-    const typesCollection = client.db("pokemons-db").collection("poke-types");
-    await typesCollection.insertMany(
-        types.map((type) => {
-            return { type };
-        })
-    );
-    client.close();
+    for (let pokemon of pokemons) {
+        await client
+            .query("INSERT INTO pokemons VALUES($1, $2, $3, $4, $5, $6 );", [
+                pokemon.index,
+                pokemon.name,
+                pokemon.weight,
+                pokemon.height,
+                pokemon.img,
+                pokemon.types,
+            ])
+            .catch((err) => console.log(err));
+    }
+
+    await client.end();
 };
 
 if (operation === "display") {
@@ -116,7 +119,7 @@ if (operation === "display") {
             fs.readFileSync(dataPath, { encoding: "utf-8" })
         );
 
-        return pokemons.map((element) => element.id);
+        return pokemons.map((element) => element.index);
     };
 
     const allIDs = getAllIds();
@@ -138,4 +141,6 @@ if (operation === "mix") {
     mix();
 }
 
-loadTypes();
+if (operation === "insert") {
+    insertToDb();
+}

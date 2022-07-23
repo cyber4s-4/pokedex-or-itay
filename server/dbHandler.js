@@ -1,42 +1,48 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTypes = exports.getPokemonByName = exports.getPokemonsByType = exports.getAllPokemons = exports.connect = void 0;
-const mongodb_1 = require("mongodb");
-const connectionString = "mongodb+srv://or:or123@cluster0.khg90.mongodb.net/?retryWrites=true&w=majority";
+const pg_1 = __importDefault(require("pg"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const process_1 = __importDefault(require("process"));
+dotenv_1.default.config();
 let client;
-let pokeCollection;
 const connect = async () => {
-    client = new mongodb_1.MongoClient(connectionString);
     try {
+        console.log("connecting");
+        client = new pg_1.default.Client({
+            connectionString: process_1.default.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false },
+        });
         await client.connect();
-        pokeCollection = client.db("pokemons-db").collection("pokemons");
-        console.log("connected !");
     }
     catch (e) {
-        throw "couldnt connect";
+        console.log("couldnt connect: ", e);
     }
 };
 exports.connect = connect;
 const getAllPokemons = async () => {
-    const cursor = pokeCollection.find();
-    const pokemons = await cursor.toArray();
-    return pokemons;
+    const data = await client.query("SELECT * FROM pokemons;");
+    return data.rows;
 };
 exports.getAllPokemons = getAllPokemons;
 const getPokemonsByType = async (type) => {
-    const cursor = pokeCollection.find({ types: type });
-    const pokemons = await cursor.toArray();
-    return pokemons;
+    const data = await client.query(`SELECT * FROM pokemons WHERE '${type}'=ANY(types);`);
+    return data.rows;
 };
 exports.getPokemonsByType = getPokemonsByType;
-const getPokemonByName = async (name) => await pokeCollection.findOne({ name: name });
+const getPokemonByName = async (name) => {
+    const data = await client.query(`SELECT * FROM pokemons WHERE name='${name}'`);
+    return data.rows[0];
+};
 exports.getPokemonByName = getPokemonByName;
 const getTypes = async () => {
-    const pokeTypesCollection = client
-        .db("pokemons-db")
-        .collection("poke-types");
-    const typesCursor = pokeTypesCollection.find();
-    return await typesCursor.toArray();
+    const data = await client.query(`SELECT DISTINCT types FROM pokemons;`);
+    const puffedTypes = data.rows.map((emptyPokemon) => emptyPokemon.types);
+    const allTypes = [...new Set(puffedTypes.flat())];
+    return allTypes;
 };
 exports.getTypes = getTypes;
 //# sourceMappingURL=dbHandler.js.map
