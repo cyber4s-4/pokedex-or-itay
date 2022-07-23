@@ -74,15 +74,4 @@ gulp.task("tsc-w", () => {
 });
 
 // Run all together
-gulp.task(
-    "default",
-    gulp.series(
-        "start",
-        "scss",
-        "index",
-        "tsc",
-        "build",
-
-        gulp.parallel("watch-scss", "watch-html", "watch-tsc", "tsc-w")
-    )
-);
+gulp.task("default", gulp.series("start", "scss", "index", "tsc", "build"));
